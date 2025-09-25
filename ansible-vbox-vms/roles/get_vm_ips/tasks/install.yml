@@ -1,0 +1,6 @@
+---
+- name: Instalar arp-scan en el host de control
+  apt:
+    name: arp-scan
+    state: present
+    update_cache: yes

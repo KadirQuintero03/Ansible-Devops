@@ -7,7 +7,7 @@
       ansible.builtin.import_role:
         name: prerequisites
 
-    - name: "Paso 2: Remove all VMs (danger zone)"
+    - name: "Remove all VMs (danger zone)"
       ansible.builtin.import_role:
         name: remove_vms
         
@@ -15,6 +15,18 @@
       ansible.builtin.import_role:
         name: kvm
 
-    - name: "Paso 3: Crear VM tools"
+    # - name: "Crear VM tools"
+    #   ansible.builtin.import_role:
+    #     name: create_vm_tools
+
+    - name: "Crear VM master"
       ansible.builtin.import_role:
-        name: create_vm_tools
+        name: create_vm_master
+
+    # - name: "Crear VM worker"
+    #   ansible.builtin.import_role:
+    #     name: create_vm_worker
+
+    - name: "Obtener IP VMs"
+      ansible.builtin.import_role:
+        name: get_vm_ips

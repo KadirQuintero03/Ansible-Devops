@@ -1,0 +1,9 @@
+---
+- name: Incluir tarea de instalación
+  include_tasks: install.yml
+
+- name: Incluir tarea de espera
+  include_tasks: wait.yml
+
+- name: Incluir tarea de escaneo
+  include_tasks: scan.yml

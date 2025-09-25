@@ -1,0 +1,37 @@
+- name: Detectar interfaz de red principal
+  shell: ip route | grep '^default' | awk '{print $5}' | head -n1
+  register: net_if
+
+- name: Definir MACs de las VMs (en minúsculas y con :)
+  set_fact:
+    vm_macs:
+      - "08:00:27:27:62:d6"
+      - "08:00:27:9e:47:3a"
+      - "08:00:27:e4:9d:0c"
+
+- name: Escanear red con arp-scan
+  shell: arp-scan --interface={{ net_if.stdout }} --localnet
+  register: arp_output
+  become: true
+
+- name: Mostrar salida cruda de arp-scan
+  debug:
+    var: arp_output.stdout_lines
+
+- name: Filtrar solo IPs de las VMs por MAC
+  set_fact:
+    vm_ips: >
+      {%- set result = [] -%}
+      {%- for line in arp_output.stdout_lines -%}
+        {%- set parts = line.split() -%}
+        {%- if parts | length >= 2 and parts[1] in vm_macs -%}
+          {%- set _ = result.append([parts[0], parts[1]]) -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {{ result }}
+
+- name: Mostrar IPs de las VMs
+  debug:
+    msg: "VM con MAC {{ item[1] }} tiene IP {{ item[0] }}"
+  loop: "{{ vm_ips }}"
+

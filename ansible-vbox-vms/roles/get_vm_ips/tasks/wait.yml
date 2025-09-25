@@ -1,0 +1,4 @@
+---
+- name: Esperar hasta que arranquen las VMs
+  wait_for:
+    timeout: 360
