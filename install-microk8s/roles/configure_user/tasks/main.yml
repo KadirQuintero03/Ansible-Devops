@@ -1,0 +1,21 @@
+---
+- name: Add user to microk8s group
+  user:
+    name: "{{ ansible_user }}"
+    groups: microk8s
+    append: yes
+
+- name: Ensure .kube directory exists
+  file:
+    path: "/home/{{ ansible_user }}/.kube"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0755'
+
+- name: Apply correct permissions to .kube
+  file:
+    path: "/home/{{ ansible_user }}/.kube"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    recurse: yes

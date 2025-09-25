@@ -1,0 +1,13 @@
+---
+- name: Remove conflicting packages
+  apt:
+    name: "{{ item }}"
+    state: absent
+  loop:
+    - docker.io
+    - docker-doc
+    - docker-compose
+    - podman-docker
+    - containerd
+    - runc
+  ignore_errors: yes

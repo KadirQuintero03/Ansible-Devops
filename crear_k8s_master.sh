@@ -1,0 +1,27 @@
+#!/bin/bash
+# Script para crear y arrancar la VM k8s-master en VirtualBox
+
+OUT_ISO="/vm/iso/debian-13.0.0-amd64-netinst-custom.iso"
+
+# Crear VM
+VBoxManage createvm --name "k8s-master" --ostype Debian_64 --basefolder /vm --register
+
+# Configuración básica
+VBoxManage modifyvm "k8s-master" --firmware bios --boot1 dvd --boot2 disk --boot3 none --boot4 none
+VBoxManage modifyvm "k8s-master" --memory 10240 --cpus 5 --audio-driver none --graphicscontroller vmsvga --vram 16
+
+# Disco duro
+VBoxManage createhd --filename /vm/k8s-master/k8s-master.vdi --size 40000 --variant Standard
+VBoxManage storagectl "k8s-master" --name "SATA Controller" --add sata --controller IntelAhci
+VBoxManage storageattach "k8s-master" --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium /vm/k8s-master/k8s-master.vdi --nonrotational on --hotpluggable on
+
+# Configuración de red y MAC
+VBoxManage modifyvm "k8s-master" --macaddress1 0800279E473A
+VBoxManage modifyvm "k8s-master" --nic1 bridged --bridgeadapter1 enp43s0
+
+# Controladora IDE y montaje ISO
+VBoxManage storagectl "k8s-master" --name "IDE Controller" --add ide
+VBoxManage storageattach "k8s-master" --storagectl "IDE Controller" --port 0 --device 0 --type dvddrive --medium "$OUT_ISO"
+
+# Iniciar VM
+VBoxManage startvm "k8s-master"

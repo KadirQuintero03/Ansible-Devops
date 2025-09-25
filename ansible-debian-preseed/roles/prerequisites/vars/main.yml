@@ -1,0 +1,7 @@
+---
+packages_required:
+  - xorriso
+  - isolinux
+  - syslinux-utils
+  - rsync
+  - whois

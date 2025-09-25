@@ -1,0 +1,24 @@
+---
+# Paso 2: Remove all VMs (danger zone)
+- name: "Listar todas las VMs en VirtualBox"
+  ansible.builtin.shell: |
+    VBoxManage list vms | awk -F\" '{print $2}'
+  register: vms_list
+  changed_when: false
+
+- name: "Apagar las VMs que estén corriendo"
+  ansible.builtin.shell: |
+    if VBoxManage showvminfo "{{ item }}" | grep -q "running (since"; then
+      VBoxManage controlvm "{{ item }}" poweroff
+    fi
+  loop: "{{ vms_list.stdout_lines }}"
+  when: vms_list.stdout_lines | length > 0
+
+- name: "Eliminar y desregistrar todas las VMs (irreversible)"
+  ansible.builtin.shell: VBoxManage unregistervm "{{ item }}" --delete
+  loop: "{{ vms_list.stdout_lines }}"
+  when: vms_list.stdout_lines | length > 0
+
+- name: "Definir ruta de la ISO generada"
+  ansible.builtin.set_fact:
+    out_iso: "/vm/iso/debian-13.1.0-amd64-netinst-custom.iso"

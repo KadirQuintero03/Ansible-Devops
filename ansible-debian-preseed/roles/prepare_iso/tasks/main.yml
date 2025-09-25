@@ -1,0 +1,32 @@
+---
+- name: Asegurar directorios base (incluyendo punto de montaje y working dir)
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - /vm
+    - /vm/iso
+    - "{{ MNT_DIR }}"   
+    - "{{ WRK_DIR }}"  
+  become: true
+
+- name: Montar la ISO en el directorio de montaje
+  ansible.builtin.command: "mount -o loop {{ SRC_ISO }} {{ MNT_DIR }}"
+  args:
+    creates: "{{ MNT_DIR }}/.disk"   # evita montajes múltiples
+  become: true
+
+- name: Sincronizar contenido de la ISO al directorio de trabajo
+  synchronize:
+    src: "{{ MNT_DIR }}/"
+    dest: "{{ WRK_DIR }}/"
+    delete: yes
+  become: true
+  delegate_to: localhost
+
+- name: Notificar que la preparación del working tree fue exitosa
+  debug:
+    msg: "El contenido de {{ SRC_ISO }} fue copiado correctamente a {{ WRK_DIR }}"
+  notify: "iso preparada"
+

@@ -1,0 +1,20 @@
+---
+- name: "Crear y configurar VMs en VirtualBox con VBoxManage"
+  hosts: local
+  become: true
+  tasks:
+    - name: "Incluir prerequisitos"
+      ansible.builtin.import_role:
+        name: prerequisites
+
+    - name: "Paso 2: Remove all VMs (danger zone)"
+      ansible.builtin.import_role:
+        name: remove_vms
+        
+    - name: "Paso intermedio KVM"
+      ansible.builtin.import_role:
+        name: kvm
+
+    - name: "Paso 3: Crear VM tools"
+      ansible.builtin.import_role:
+        name: create_vm_tools

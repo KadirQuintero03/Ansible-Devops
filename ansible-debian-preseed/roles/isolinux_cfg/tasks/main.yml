@@ -1,0 +1,112 @@
+---
+- name: Definir rutas de trabajo para isolinux
+  set_fact:
+    isolinux_cfg_path: "{{ WRK_DIR }}/isolinux/isolinux.cfg"
+    txt_cfg_path: "{{ WRK_DIR }}/isolinux/txt.cfg"
+    isolinux_dir: "{{ WRK_DIR }}/isolinux"
+
+- name: "Asegurar que el directorio isolinux existe en WRK_DIR"
+  file:
+    path: "{{ isolinux_dir }}"
+    state: directory
+    mode: '0755'
+  become: true
+
+############################
+# ---- isolinux.cfg ----
+############################
+
+- name: "Dar propiedad temporal al usuario actual sobre isolinux.cfg"
+  file:
+    path: "{{ isolinux_cfg_path }}"
+    owner: "{{ lookup('env','USER') | default('sysadmin') }}"
+    group: "{{ lookup('env','USER') | default('sysadmin') }}"
+    state: file
+  become: true
+  ignore_errors: true
+
+- name: "Dar permisos de escritura temporal (666) a isolinux.cfg"
+  file:
+    path: "{{ isolinux_cfg_path }}"
+    mode: '0666'
+    state: file
+  become: true
+  ignore_errors: true
+
+- name: "Reemplazar isolinux.cfg con el template"
+  template:
+    src: isolinux.cfg.j2
+    dest: "{{ isolinux_cfg_path }}"
+    mode: '0644'
+  become: true
+
+- name: "Restaurar propietario a root:root y permisos 0644 (isolinux.cfg)"
+  file:
+    path: "{{ isolinux_cfg_path }}"
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+
+############################
+# ---- txt.cfg ----
+############################
+
+- name: "Dar propiedad temporal al usuario actual sobre txt.cfg"
+  file:
+    path: "{{ txt_cfg_path }}"
+    owner: "{{ lookup('env','USER') | default('sysadmin') }}"
+    group: "{{ lookup('env','USER') | default('sysadmin') }}"
+    state: file
+  become: true
+  ignore_errors: true
+
+- name: "Dar permisos de escritura temporal (666) a txt.cfg"
+  file:
+    path: "{{ txt_cfg_path }}"
+    mode: '0666'
+    state: file
+  become: true
+  ignore_errors: true
+
+- name: "Reemplazar txt.cfg con el template"
+  template:
+    src: txt.cfg.j2
+    dest: "{{ txt_cfg_path }}"
+    mode: '0644'
+  become: true
+
+- name: "Restaurar propietario a root:root y permisos 0644 (txt.cfg)"
+  file:
+    path: "{{ txt_cfg_path }}"
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+
+############################
+# ---- Verificación ----
+############################
+
+- name: "Verificar las primeras 20 líneas de isolinux.cfg"
+  command: "head -n 20 {{ isolinux_cfg_path }}"
+  register: isolinux_head
+  changed_when: false
+  failed_when: false
+  become: true
+
+- name: "Verificar las primeras 20 líneas de txt.cfg"
+  command: "head -n 20 {{ txt_cfg_path }}"
+  register: txt_head
+  changed_when: false
+  failed_when: false
+  become: true
+
+- debug:
+    msg: |
+      isolinux.cfg:
+      {{ isolinux_head.stdout | default('No se pudo leer isolinux.cfg') }}
+
+      txt.cfg:
+      {{ txt_head.stdout | default('No se pudo leer txt.cfg') }}
+

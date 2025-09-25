@@ -1,0 +1,60 @@
+---
+- name: "Definir ruta de grub.cfg en WRK_DIR"
+  set_fact:
+    grub_cfg_path: "{{ (WRK_DIR | default('/vm/iso/debian-iso-work')) + '/boot/grub/grub.cfg' }}"
+    grub_dir: "{{ (WRK_DIR | default('/vm/iso/debian-iso-work')) + '/boot/grub' }}"
+
+- name: "Asegurar que el directorio grub existe"
+  file:
+    path: "{{ grub_dir }}"
+    state: directory
+    mode: '0755'
+  become: true
+
+- name: "Crear grub.cfg vacío si no existe"
+  file:
+    path: "{{ grub_cfg_path }}"
+    state: touch
+    mode: '0644'
+  become: true
+
+- name: "Hacer backup de grub.cfg original"
+  copy:
+    src: "{{ grub_cfg_path }}"
+    dest: "{{ grub_cfg_path }}.bak"
+    remote_src: yes
+  become: true
+  ignore_errors: true
+
+# Cambiar permisos para permitir escritura
+- name: "Dar permisos de escritura temporales a grub.cfg"
+  file:
+    path: "{{ grub_cfg_path }}"
+    mode: '0666'
+  become: true
+
+- name: "Reemplazar grub.cfg con template"
+  template:
+    src: grub.cfg.j2
+    dest: "{{ grub_cfg_path }}"
+    mode: '0644'
+  become: true
+
+# Restaurar permisos seguros
+- name: "Restaurar permisos de grub.cfg"
+  file:
+    path: "{{ grub_cfg_path }}"
+    mode: '0644'
+    owner: root
+    group: root
+  become: true
+
+- name: "Verificar primeras líneas de grub.cfg"
+  command: "head -n 20 {{ grub_cfg_path }}"
+  register: grub_head
+  changed_when: false
+  failed_when: false
+  become: true
+
+- debug:
+    msg: "{{ grub_head.stdout | default('No se pudo leer grub.cfg') }}"

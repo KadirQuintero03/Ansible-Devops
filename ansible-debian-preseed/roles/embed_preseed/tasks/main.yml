@@ -1,0 +1,49 @@
+---
+- name: "Definir ruta base de install.amd"
+  set_fact:
+    install_amd_dir: "{{ (WRK_DIR | default('/vm/iso/debian-iso-work')) + '/install.amd' }}"
+
+- name: "Crear directorio temporal initrd-edit"
+  file:
+    path: "{{ install_amd_dir }}/initrd-edit"
+    state: directory
+    mode: '0755'
+  become: true
+
+- name: "Extraer initrd.gz en initrd-edit"
+  shell: |
+    cd "{{ install_amd_dir }}/initrd-edit"
+    gunzip -c ../initrd.gz | cpio -id
+  args:
+    chdir: "{{ install_amd_dir }}/initrd-edit"
+  become: true
+
+- name: "Copiar preseed.cfg dentro de initrd-edit"
+  copy:
+    src: "{{ WRK_DIR }}/preseed.cfg"
+    dest: "{{ install_amd_dir }}/initrd-edit/preseed.cfg"
+    mode: '0644'
+  become: true
+
+- name: "Regenerar initrd.gz con preseed incrustado"
+  shell: |
+    cd "{{ install_amd_dir }}/initrd-edit"
+    find . | cpio -o -H newc | gzip -9 > ../initrd.gz
+  args:
+    chdir: "{{ install_amd_dir }}/initrd-edit"
+  become: true
+
+- name: "Eliminar directorio temporal initrd-edit"
+  file:
+    path: "{{ install_amd_dir }}/initrd-edit"
+    state: absent
+  become: true
+
+- name: "Confirmar que initrd.gz fue regenerado"
+  stat:
+    path: "{{ install_amd_dir }}/initrd.gz"
+  register: initrd_status
+  become: true
+
+- debug:
+    msg: "initrd.gz regenerado con preseed incrustado (size={{ initrd_status.stat.size }} bytes)"

@@ -1,0 +1,6 @@
+---
+- name: Install Docker on Debian nodes
+  hosts: hosts
+  become: yes
+  roles:
+    - docker

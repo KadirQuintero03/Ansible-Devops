@@ -1,0 +1,15 @@
+---
+- name: Actualizar índices de paquetes
+  apt:
+    update_cache: yes
+
+- name: Instalar paquetes necesarios para construir ISO
+  apt:
+    name:
+      - xorriso
+      - isolinux
+      - syslinux-utils
+      - rsync
+      - whois
+    state: present
+

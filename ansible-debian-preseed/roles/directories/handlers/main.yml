@@ -1,0 +1,12 @@
+---
+- name: Mostrar mensaje directorios
+  debug:
+    msg: "✅ Directorios /vm creados correctamente."
+
+- name: Mostrar mensaje copia iso
+  debug:
+    msg: "✅ ISO copiada a /vm/iso/."
+
+- name: Mostrar mensaje hash
+  debug:
+    msg: "✅ Hash SHA-512 generado y guardado en /vm/iso/hashed_password.txt."

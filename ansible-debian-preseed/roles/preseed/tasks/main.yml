@@ -1,0 +1,28 @@
+---
+- name: Leer hash de contraseña generado en paso 1
+  slurp:
+    src: "/vm/iso/hashed_password.txt"
+  register: hashed_pass_raw
+
+- name: Decodificar hash leído
+  set_fact:
+    preseed_password: "{{ hashed_pass_raw['content'] | b64decode | trim }}"
+
+- name: Crear preseed.cfg en el directorio de trabajo
+  template:
+    src: preseed.cfg.j2
+    dest: "{{ WRK_DIR }}/preseed.cfg"
+    mode: '0644'
+  become: true
+
+- name: Copiar archivo authorized_keys al WRK_DIR
+  copy:
+    src: "/home/sysadmin/.ssh/authorized_keys"
+    dest: "{{ WRK_DIR }}/authorized_keys"
+    mode: '0644'
+  become: true
+
+- name: Notificar que preseed.cfg fue configurado exitosamente
+  debug:
+    msg: "Se generó {{ WRK_DIR }}/preseed.cfg y se copió authorized_keys."
+  notify: "preseed listo"

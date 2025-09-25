@@ -1,0 +1,4 @@
+---
+SRC_ISO: "/vm/iso/debian-13.1.0-amd64-netinst.iso"
+MNT_DIR: "/vm/iso/debian-iso"
+WRK_DIR: "/vm/iso/debian-iso-work"

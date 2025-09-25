@@ -1,0 +1,4 @@
+---
+- name: iso preparada
+  debug:
+    msg: "La ISO fue montada y copiada correctamente al árbol de trabajo."

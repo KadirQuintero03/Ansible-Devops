@@ -1,0 +1,12 @@
+---
+- name: "Descargar módulo kvm_intel si está cargado"
+  ansible.builtin.shell: sudo modprobe -r kvm_intel
+  ignore_errors: true
+
+- name: "Descargar módulo kvm_amd si está cargado"
+  ansible.builtin.shell: sudo modprobe -r kvm_amd
+  ignore_errors: true
+
+- name: "Descargar módulo kvm genérico si está cargado"
+  ansible.builtin.shell: sudo modprobe -r kvm
+  ignore_errors: true

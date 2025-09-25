@@ -1,0 +1,26 @@
+---
+- name: "Paso 7: Definir ruta de salida de la ISO"
+  set_fact:
+    out_iso: "/vm/iso/debian-13.1.0-amd64-netinst-custom.iso"
+
+- name: "Paso 7: Generar ISO personalizada con xorriso"
+  become: true
+  shell: |
+    xorriso -as mkisofs \
+      -o "{{ out_iso }}" \
+      -r -iso-level 3 -V "DEBIAN_CUSTOM" \
+      -no-emul-boot -boot-load-size 4 -boot-info-table \
+      -b isolinux/isolinux.bin -c isolinux/boot.cat \
+      -eltorito-alt-boot -e boot/grub/efi.img -no-emul-boot \
+      -isohybrid-gpt-basdat -isohybrid-apm-hfsplus \
+      -input-charset utf-8 \
+      "{{ WRK_DIR }}"
+  args:
+    executable: /bin/bash
+
+- name: "Paso 7: Desmontar directorio de montaje si está montado"
+  become: true
+  shell: |
+    umount "{{ MNT_DIR }}" || true
+  args:
+    executable: /bin/bash

@@ -1,0 +1,17 @@
+---
+- name: "Actualizar repositorios"
+  apt:
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+
+- name: "Instalar VirtualBox 7.x"
+  apt:
+    name: virtualbox
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: "Verificar que VBoxManage está en PATH"
+  command: vboxmanage --version
+  register: vbox_version
+  changed_when: false
+  failed_when: vbox_version.rc != 0

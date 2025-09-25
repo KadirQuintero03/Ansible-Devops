@@ -1,0 +1,6 @@
+---
+- name: Desplegar Nginx en localhost
+  hosts: local
+  become: true
+  roles:
+    - nginx

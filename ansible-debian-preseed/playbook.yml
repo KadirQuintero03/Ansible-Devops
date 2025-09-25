@@ -1,0 +1,13 @@
+---
+- name: Automatización ISO Debian
+  hosts: local
+  become: true
+  roles:
+    - prerequisites   # Paso 0
+    - directories     # Paso 1
+    - prepare_iso     # Paso 2
+    - preseed         # Paso 3
+    - isolinux_cfg    # Paso 4
+    - grub_cfg        # Paso 5
+    - embed_preseed   # Paso 6
+    - build_iso       # Paso 7

@@ -1,0 +1,4 @@
+---
+- name: preseed listo
+  debug:
+    msg: "El archivo preseed.cfg y authorized_keys están listos en el working dir."
