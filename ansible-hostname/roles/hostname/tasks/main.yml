@@ -1,0 +1,4 @@
+---
+- name: Set hostname for each VM
+  ansible.builtin.hostname:
+    name: "{{ hostname }}"

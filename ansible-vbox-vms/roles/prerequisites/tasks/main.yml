@@ -15,3 +15,17 @@
   register: vbox_version
   changed_when: false
   failed_when: vbox_version.rc != 0
+
+- name: Instalar isc-dhcp-server
+  become: true
+  ansible.builtin.package:
+    name: isc-dhcp-server
+    state: present
+
+- name: Asegurar que isc-dhcp-server está activo
+  become: true
+  ansible.builtin.systemd:
+    name: isc-dhcp-server
+    state: started
+    enabled: yes
+

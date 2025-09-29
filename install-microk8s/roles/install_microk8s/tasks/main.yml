@@ -1,3 +1,13 @@
 ---
 - name: Install MicroK8s
   command: snap install microk8s --classic
+
+- name: Ensure microk8s binary is available
+  stat:
+    path: /snap/bin/microk8s
+  register: microk8s_bin
+
+- name: Fail if microk8s is not installed
+  fail:
+    msg: "MicroK8s not installed correctly"
+  when: not microk8s_bin.stat.exists

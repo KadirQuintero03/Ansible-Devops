@@ -1,0 +1,13 @@
+---
+- name: Configure timezone for all VMs
+  hosts: all
+  become: yes
+  pre_tasks:
+    - name: Ensure community.general collection is installed
+      ansible.builtin.command:
+        cmd: ansible-galaxy collection install community.general
+      delegate_to: localhost
+      run_once: true
+
+  roles:
+    - timezone
