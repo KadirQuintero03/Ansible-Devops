@@ -1,9 +1,0 @@
----
-- name: Install and configure MicroK8s
-  hosts: all
-  become: yes
-  roles:
-    - prerequisites
-    - install_microk8s
-    - configure_user
-    - verify_microk8s
