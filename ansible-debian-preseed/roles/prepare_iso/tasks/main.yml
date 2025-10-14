@@ -1,4 +1,9 @@
----
+--- 
+- name: Desmontar punto de montaje de la ISO si está montado
+  ansible.builtin.mount:
+    path: "{{ MNT_DIR }}"
+    state: unmounted
+  become: true
 - name: Asegurar directorios base (incluyendo punto de montaje y working dir)
   file:
     path: "{{ item }}"

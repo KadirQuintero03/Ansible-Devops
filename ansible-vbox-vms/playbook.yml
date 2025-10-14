@@ -10,23 +10,23 @@
     - name: "Remove all VMs (danger zone)"
       ansible.builtin.import_role:
         name: remove_vms
-        
+
     - name: "Paso intermedio KVM"
       ansible.builtin.import_role:
         name: kvm
-
-    # - name: "Crear VM tools"
-    #   ansible.builtin.import_role:
-    #     name: create_vm_tools
 
     - name: "Crear VM master"
       ansible.builtin.import_role:
         name: create_vm_master
 
-    # - name: "Crear VM worker"
-    #   ansible.builtin.import_role:
-    #     name: create_vm_worker
+    - name: "Crear VM worker"
+      ansible.builtin.import_role:
+        name: create_vm_worker
 
     - name: "Obtener IP VMs"
       ansible.builtin.import_role:
         name: get_vm_ips
+
+    # - name: "Configurar SSH acceso sin contraseña"
+    #   ansible.builtin.import_role:
+    #     name: ssh_bootstrap

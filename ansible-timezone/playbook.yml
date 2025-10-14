@@ -6,6 +6,7 @@
     - name: Ensure community.general collection is installed
       ansible.builtin.command:
         cmd: ansible-galaxy collection install community.general
+        creates: ~/.ansible/collections/ansible_collections/community/general
       delegate_to: localhost
       run_once: true
 

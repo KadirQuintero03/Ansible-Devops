@@ -1,0 +1,33 @@
+---
+- name: Ensure .ssh directory exists for user
+  ansible.builtin.file:
+    path: "/home/{{ ansible_user | default('ansible') }}/.ssh"
+    state: directory
+    owner: "{{ ansible_user | default('ansible') }}"
+    group: "{{ ansible_user | default('ansible') }}"
+    mode: '0700'
+  become: true
+
+- name: Copy local SSH public key to remote authorized_keys
+  ansible.builtin.copy:
+    src: "~/.ssh/id_ed25519.pub"
+    dest: "/home/{{ ansible_user | default('ansible') }}/.ssh/authorized_keys"
+    owner: "{{ ansible_user | default('ansible') }}"
+    group: "{{ ansible_user | default('ansible') }}"
+    mode: '0600'
+  become: true
+
+- name: Ensure correct permissions on authorized_keys file
+  ansible.builtin.file:
+    path: "/home/{{ ansible_user | default('ansible') }}/.ssh/authorized_keys"
+    owner: "{{ ansible_user | default('ansible') }}"
+    group: "{{ ansible_user | default('ansible') }}"
+    mode: '0600'
+  become: true
+
+- name: Ensure SSH service is running and enabled
+  ansible.builtin.systemd:
+    name: ssh
+    state: started
+    enabled: true
+  become: true

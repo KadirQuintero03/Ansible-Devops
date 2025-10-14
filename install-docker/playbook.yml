@@ -1,6 +1,6 @@
 ---
 - name: Install Docker on Debian nodes
-  hosts: k8s-master
+  hosts: k8s-worker
   become: yes
   roles:
     - docker
