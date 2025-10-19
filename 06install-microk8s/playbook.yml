@@ -1,6 +1,6 @@
 ---
 - name: Install and configure MicroK8s
-  hosts: all
+  hosts: vms
   become: yes
   roles:
     - prerequisites

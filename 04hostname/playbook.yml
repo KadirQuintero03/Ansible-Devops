@@ -1,6 +1,6 @@
 ---
 - name: Configure hostname for each VM
-  hosts: all
+  hosts: vms
   become: yes
   roles:
     - hostname

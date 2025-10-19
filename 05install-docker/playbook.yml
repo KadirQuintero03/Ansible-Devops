@@ -1,6 +1,6 @@
 ---
 - name: Install Docker on Debian nodes
-  hosts: hosts
+  hosts: vms
   become: yes
   roles:
     - docker

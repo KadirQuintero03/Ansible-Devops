@@ -1,0 +1,10 @@
+---
+- name: 🧹 Eliminar archivos known_hosts previos
+  become: yes
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "/home/{{ ansible_user | default('sysadmin') }}/.ssh/known_hosts"
+    - "/home/{{ ansible_user | default('sysadmin') }}/.ssh/known_hosts.old"
+  ignore_errors: yes

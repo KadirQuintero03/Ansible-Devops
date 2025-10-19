@@ -3,6 +3,10 @@
   hosts: local
   become: true
   tasks:
+    - name: "Eliminar know_hosts"
+      ansible.builtin.import_role:
+        name: clean_known_hosts
+
     - name: "Incluir prerequisitos"
       ansible.builtin.import_role:
         name: prerequisites
@@ -26,7 +30,3 @@
     - name: "Obtener IP VMs"
       ansible.builtin.import_role:
         name: get_vm_ips
-
-    # - name: "Configurar SSH acceso sin contraseña"
-    #   ansible.builtin.import_role:
-    #     name: ssh_bootstrap

@@ -1,6 +1,6 @@
 ---
 - name: Configure timezone for all VMs
-  hosts: all
+  hosts: vms
   become: yes
   pre_tasks:
     - name: Ensure community.general collection is installed

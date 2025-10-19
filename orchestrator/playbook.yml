@@ -1,0 +1,18 @@
+---
+- name: 🧩 1. Construir ISO Debian personalizada
+  import_playbook: ../01debian-preseed/playbook.yml
+
+- name: 💽 2. Crear y configurar máquinas virtuales (VirtualBox)
+  import_playbook: ../02vbox-vms/playbook.yml
+
+- name: 🖥️ 3. Configurar hostname
+  import_playbook: ../04hostname/playbook.yml
+
+- name: 🌍 4. Configurar zona horaria
+  import_playbook: ../03timezone/playbook.yml
+
+- name: 🐳 5. Instalar Docker
+  import_playbook: ../05install-docker/playbook.yml
+
+- name: ☸️ 6. Instalar MicroK8s
+  import_playbook: ../06install-microk8s/playbook.yml
