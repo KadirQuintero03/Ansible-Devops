@@ -7,7 +7,7 @@
     vm_macs:
       - "08:00:27:27:62:d6"
       - "08:00:27:9e:47:3a"
-      - "08:00:27:e4:9d:0c"
+      - "08:00:27:92:3b:5c"
 
 - name: Escanear red con arp-scan
   shell: arp-scan --interface={{ net_if.stdout }} --localnet

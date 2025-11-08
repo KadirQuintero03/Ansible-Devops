@@ -8,8 +8,8 @@
 - name: 🖥️ 3. Configurar hostname
   import_playbook: ../04hostname/playbook.yml
 
-- name: 🌍 4. Configurar zona horaria
-  import_playbook: ../03timezone/playbook.yml
+# - name: 🌍 4. Configurar zona horaria
+#   import_playbook: ../03timezone/playbook.yml
 
 - name: 🐳 5. Instalar Docker
   import_playbook: ../05install-docker/playbook.yml
