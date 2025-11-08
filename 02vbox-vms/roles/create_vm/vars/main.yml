@@ -1,0 +1,18 @@
+vms:
+  - name: "k8s-master"
+    cpu: 5
+    ram: 10240
+    disk: 40000
+    mac: "0800279E473A"
+    iso_path: "/vm/iso/debian-13.1.0-amd64-netinst-custom.iso"
+    basefolder: "/vm"
+    nic_adapter: "enp43s0"
+
+  - name: "k8s-worker"
+    cpu: 5
+    ram: 10240
+    disk: 40000
+    mac: "080027E49D0C"
+    iso_path: "/vm/iso/debian-13.1.0-amd64-netinst-custom.iso"
+    basefolder: "/vm"
+    nic_adapter: "enp43s0"

@@ -2,8 +2,12 @@
 - name: "Crear y configurar VMs en VirtualBox con VBoxManage"
   hosts: local
   become: true
+
+  vars_files:
+    - group_vars/all/vms.yml
+
   tasks:
-    - name: "Eliminar know_hosts"
+    - name: "Eliminar known_hosts"
       ansible.builtin.import_role:
         name: clean_known_hosts
 
@@ -19,14 +23,10 @@
       ansible.builtin.import_role:
         name: kvm
 
-    - name: "Crear VM master"
+    - name: "Crear todas las VMs definidas en vms.yml"
       ansible.builtin.import_role:
-        name: create_vm_master
+        name: create_vm
 
-    - name: "Crear VM worker"
-      ansible.builtin.import_role:
-        name: create_vm_worker
-
-    - name: "Obtener IP VMs"
+    - name: "Obtener IP de las VMs creadas"
       ansible.builtin.import_role:
         name: get_vm_ips

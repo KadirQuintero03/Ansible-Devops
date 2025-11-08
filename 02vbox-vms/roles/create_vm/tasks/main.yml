@@ -1,0 +1,55 @@
+- name: Crear VMs
+  ansible.builtin.shell: |
+    VBoxManage createvm --name "{{ item.name }}" \
+      --ostype Debian_64 \
+      --basefolder "{{ item.basefolder }}" \
+      --register
+
+    VBoxManage modifyvm "{{ item.name }}" \
+      --firmware bios \
+      --boot1 dvd --boot2 disk --boot3 none --boot4 none
+
+    VBoxManage modifyvm "{{ item.name }}" \
+      --memory {{ item.ram }} \
+      --cpus {{ item.cpu }} \
+      --audio-driver none \
+      --graphicscontroller vmsvga \
+      --vram 16
+
+    VBoxManage createhd \
+      --filename {{ item.basefolder }}/{{ item.name }}/{{ item.name }}.vdi \
+      --size {{ item.disk }} \
+      --variant Standard
+
+    VBoxManage storagectl "{{ item.name }}" \
+      --name "SATA Controller" --add sata --controller IntelAhci
+
+    VBoxManage storageattach "{{ item.name }}" \
+      --storagectl "SATA Controller" \
+      --port 0 \
+      --device 0 \
+      --type hdd \
+      --medium {{ item.basefolder }}/{{ item.name }}/{{ item.name }}.vdi \
+      --nonrotational on --hotpluggable on
+
+    VBoxManage modifyvm "{{ item.name }}" --macaddress1 {{ item.mac }}
+
+    VBoxManage modifyvm "{{ item.name }}" \
+      --nic1 bridged \
+      --bridgeadapter1 {{ item.nic_adapter }}
+
+    VBoxManage storagectl "{{ item.name }}" \
+      --name "IDE Controller" \
+      --add ide
+
+    VBoxManage storageattach "{{ item.name }}" \
+      --storagectl "IDE Controller" \
+      --port 0 \
+      --device 0 \
+      --type dvddrive \
+      --medium "{{ item.iso_path }}"
+
+    VBoxManage startvm "{{ item.name }}"
+  args:
+    executable: /bin/bash
+  loop: "{{ vms }}"
